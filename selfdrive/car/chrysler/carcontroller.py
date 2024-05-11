@@ -40,6 +40,7 @@ class CarController:
     self.minAccSetting = V_CRUISE_MIN_MS if self.settingsParams.get_bool("IsMetric") else V_CRUISE_MIN_IMPERIAL_MS
     self.round_to_unit = CV.MS_TO_KPH if self.settingsParams.get_bool("IsMetric") else CV.MS_TO_MPH
     self.steerNoMinimum = self.settingsParams.get_bool("jvePilot.settings.steer.noMinimum")
+    self.auto_enable_acc = self.settingsParams.get_bool("jvePilot.settings.autoEnableAcc")
 
     self.autoFollowDistanceLock = None
     self.button_frame = 0
@@ -83,12 +84,12 @@ class CarController:
 
     # steering
     new_steer = int(round(CC.actuators.steer * self.params.STEER_MAX))
-    if self.frame % self.params.STEER_STEP == 0 or abs(new_steer - int(self.apply_steer_last) > 30):
+    if self.frame % self.params.STEER_STEP == 0 or abs(new_steer - int(self.apply_steer_last) > self.cachedParams.get_float('jvePilot.settings.steer.chillLevel', 1000)):
       # TODO: can we make this more sane? why is it different for all the cars?
       high_steer = self.CP.flags & ChryslerFlags.HIGHER_MIN_STEERING_SPEED
       lkas_control_bit = self.lkas_control_bit_prev
       if self.steerNoMinimum:
-        lkas_control_bit = CC.latActive or not high_steer  # never turn off low steer
+        lkas_control_bit = CC.latActive or not high_steer  # never turn off vehicles that can already low steer
       elif CS.out.vEgo > self.CP.minSteerSpeed:
         lkas_control_bit = True
       elif high_steer:
@@ -110,17 +111,7 @@ class CarController:
       self.lkas_control_bit_prev = lkas_control_bit
 
       # steer torque
-      if CS.out.vEgo < 2.:  # limit steer
-        temp_up = self.params.STEER_DELTA_UP
-        temp_down = self.params.STEER_DELTA_DOWN
-
-        self.params.STEER_DELTA_UP = self.params.STEER_DELTA_DOWN = 1
-        apply_steer = apply_meas_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorqueEps,
-                                                     self.params)
-        self.params.STEER_DELTA_UP = temp_up
-        self.params.STEER_DELTA_DOWN = temp_down
-      else:
-        apply_steer = apply_meas_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorqueEps, self.params)
+      apply_steer = apply_meas_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorqueEps, self.params)
 
       if not CC.latActive or not lkas_control_bit:
         apply_steer = 0
@@ -171,6 +162,13 @@ class CarController:
             buttons_to_press = ["ACC_Resume"]
           elif CS.out.cruiseState.enabled:  # Control ACC
             buttons_to_press = [self.auto_follow_button(CC, CS), self.hybrid_acc_button(CC, CS)]
+
+    # ACC Auto enable
+    if self.auto_enable_acc and self.frame < 50:
+      if not CS.out.cruiseState.available:
+        buttons_to_press.append("ACC_OnOff")
+      else:
+        self.auto_enable_acc = False
 
     buttons_to_press = list(filter(None, buttons_to_press))
     if buttons_to_press is not None and len(buttons_to_press) > 0:
