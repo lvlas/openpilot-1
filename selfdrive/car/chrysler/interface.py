@@ -40,6 +40,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 2242.
       ret.wheelbase = 3.089
       ret.steerRatio = 16.2  # Pacifica Hybrid 2017
+      ret.steerActuatorDelay = 0.2
 
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
