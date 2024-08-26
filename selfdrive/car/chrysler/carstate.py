@@ -44,6 +44,19 @@ class CarState(CarStateBase):
     self.settingsParams = Params()
     self.lkasHeartbit = None
     self.lkas_button_light = self.settingsParams.get_bool("jvePilot.settings.lkasButtonLight")
+    
+    ret.steeringTorque = cp.vl["EPS_2"]["COLUMN_TORQUE"]/4
+    ret.steeringTorqueEps = cp.vl["EPS_2"]["EPS_TORQUE_MOTOR"]/4 #if Params().get_bool("ChryslerMangoLat") else cp.vl["EPS_2"]["TORQUE_MOTOR"]
+    ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD/4
+    ret.cruiseState.enabled = bool(cp.vl["DAS_3"]["ACC_ACTIVE"])  # ACC is green.
+    self.steerFaultPermanent = cp.vl["EPS_2"]["LKAS_STEER_FAULT"] == 4
+    self.apaFault = cp.vl["EPS_2"]["APA_STEER_FAULT"] == 1
+    self.apasteerOn = cp.vl["EPS_2"]["AUTO_PARK_HAS_CONTROL_2"] == 1
+    self.lkas_counter = cp_cam.vl["LKAS_COMMAND"]["COUNTER"]
+    self.lkas_status_ok = cp_cam.vl["LKAS_HEARTBIT"]["LKAS_BUTTON_LED"]
+    self.apa_steer_status = cp.vl["AUTO_PARK_REQUEST"]["APA_STEER_ACT"] == 1    
+    ret.vEgoRaw = cp.vl["ESP_8"]["Vehicle_Speed"] * CV.KPH_TO_MS
+    ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)    
 
     # long control
     self.longControl = False
@@ -64,6 +77,10 @@ class CarState(CarStateBase):
   def update(self, cp, cp_cam):
     ret = car.CarState.new_message()
 
+    ret.standstill = bool(cp.vl["ESP_8"]["STANDSTILL"])
+    self.long_accel = cp.vl["INERTIAL_SENSOR"]["LONG_ACCEL"]
+    ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(cp.vl["GEAR"]["PRNDL"], None))
+    
     button_events = []
     for buttonType in CHECK_BUTTONS:
       self.check_button(button_events, buttonType, bool(cp.vl[CHECK_BUTTONS[buttonType][0]][CHECK_BUTTONS[buttonType][1]]))
