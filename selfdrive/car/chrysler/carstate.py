@@ -79,7 +79,8 @@ class CarState(CarStateBase):
     self.apa_steer_status = cp.vl["AUTO_PARK_REQUEST"]["APA_STEER_ACT"] == 1    
     ret.vEgoRaw = cp.vl["ESP_8"]["Vehicle_Speed"] * CV.KPH_TO_MS
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
-    self.acc_hold = bool(cp.vl["DAS_3"]["ACC_STANDSTILL"])    
+    self.acc_hold = bool(cp.vl["DAS_3"]["ACC_STANDSTILL"]) 
+    self.lead_dist = cp.vl["DAS_4"]["SPEED_DIGITAL"]    
     
     button_events = []
     for buttonType in CHECK_BUTTONS:
