@@ -65,7 +65,7 @@ class CarState(CarStateBase):
     ret = car.CarState.new_message()
 
     ret.standstill = bool(cp.vl["ESP_8"]["STANDSTILL"])
-    self.long_accel = cp.vl["INERTIAL_SENSOR"]["LONG_ACCEL"]
+    #self.long_accel = cp.vl["INERTIAL_SENSOR"]["LONG_ACCEL"]
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(cp.vl["GEAR"]["PRNDL"], None))
     ret.steeringTorque = cp.vl["EPS_2"]["COLUMN_TORQUE"]/4
     ret.steeringTorqueEps = cp.vl["EPS_2"]["EPS_TORQUE_MOTOR"]/4 #if Params().get_bool("ChryslerMangoLat") else cp.vl["EPS_2"]["TORQUE_MOTOR"]
