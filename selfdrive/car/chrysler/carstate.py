@@ -33,6 +33,8 @@ class CarState(CarStateBase):
     self.button_counter = 0
     self.lkas_car_model = -1
 
+    self.veh_on_timer = 0    
+
     if CP.carFingerprint in RAM_CARS:
       self.shifter_values = can_define.dv["Transmission_Status"]["Gear_State"]
     else:
@@ -83,7 +85,9 @@ class CarState(CarStateBase):
     self.lead_dist = cp.vl["DAS_4"]["SPEED_DIGITAL"]  
     self.tcs_active = bool(cp.vl["ESP_2"]["TCS_ACTIVE"])
     self.reg_cc_on_button = bool(cp.vl["CRUISE_BUTTONS"]["REG_CC_BUTTON_ON"]) 
-    self.wheel_button_counter = cp.vl["CRUISE_BUTTONS"]["COUNTER"]    
+    self.wheel_button_counter = cp.vl["CRUISE_BUTTONS"]["COUNTER"] 
+    self.veh_on_timer += 1
+    self.veh_on = self.veh_on_timer >= 200    
 
     self.acc_cancel_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Cancel"]) or self.reg_cc_on_button or self.tcs_active
     self.acc_resume_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Resume"])
