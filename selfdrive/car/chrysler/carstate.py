@@ -82,15 +82,15 @@ class CarState(CarStateBase):
     self.acc_hold = bool(cp.vl["DAS_3"]["ACC_STANDSTILL"]) 
     self.lead_dist = cp.vl["DAS_4"]["SPEED_DIGITAL"]    
 
-    #self.acc_cancel_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_CANCEL"]) or self.reg_cc_on_button or self.tcs_active
-    #self.acc_resume_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_RESUME"])
-    #self.acc_setplus_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_SPEED_INC"])
-    #self.acc_setminus_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_SPEED_DEC"])
-    #self.acc_followdec_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_FOLLOW_DEC"])
-    #self.acc_followinc_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_FOLLOW_INC"])
+    self.acc_cancel_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Cancel"]) or self.reg_cc_on_button or self.tcs_active
+    self.acc_resume_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Resume"])
+    self.acc_setplus_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Accel"])
+    self.acc_setminus_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Decel"])
+    self.acc_followdec_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Distance_Dec"])
+    self.acc_followinc_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Distance_Inc"])
 
-    #self.acc_button_pressed = self.acc_cancel_button or self.acc_resume_button or self.acc_setplus_button or \
-                              #self.acc_setminus_button or self.acc_followdec_button or self.acc_followinc_button    
+    self.acc_button_pressed = self.acc_cancel_button or self.acc_resume_button or self.acc_setplus_button or \
+                              self.acc_setminus_button or self.acc_followdec_button or self.acc_followinc_button    
     
     button_events = []
     for buttonType in CHECK_BUTTONS:
