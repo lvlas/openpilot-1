@@ -243,7 +243,7 @@ class CarState(CarStateBase):
       ("ESP_8", 50),
       ("ECM_2", 50),
       ("TRACTION_BUTTON", 1),
-
+      ("AUTO_PARK_REQUEST", 50),
       ("ECM_1", 50),
       ("ECM_TRQ", 50),
       ("TCM_A7", 50),
