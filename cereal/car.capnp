@@ -40,6 +40,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
 
   enum EventName @0xbaa8c5d505f727de {
     canError @0;
+    hightorqsteerUnavailable @ 121;
     steerUnavailable @1;
     wrongGear @4;
     doorOpen @5;
@@ -212,6 +213,7 @@ struct CarState {
   espDisabled @32 :Bool;
   accFaulted @42 :Bool;
   carFaultedNonCritical @47 :Bool;  # some ECU is faulted, but car remains controllable
+  hightorqUnavailable @51 :Bool;
 
   # cruise state
   cruiseState @10 :CruiseState;
@@ -258,6 +260,14 @@ struct CarState {
     speedOffset @3 :Float32;
     standstill @4 :Bool;
     nonAdaptive @5 :Bool;
+    followSettings @7 :FollowSettings;
+  }
+
+enum FollowSettings {
+    near @0;
+    mid @1;
+    far @2;
+    experimental @3; #this switches to E2E long
   }
 
   enum GearShifter {
@@ -407,6 +417,8 @@ struct CarControl {
     rightLaneDepart @8: Bool;
     leftLaneDepart @9: Bool;
     leadDistanceBars @10: Int8;  # 1-3: 1 is closest, 3 is farthest. some ports may utilize 2-4 bars instead
+    leadDistance @11: Float32;
+    leadvRel @12: Float32;
 
     enum VisualAlert {
       # these are the choices from the Honda
@@ -458,7 +470,7 @@ struct CarParams {
   carName @0 :Text;
   carFingerprint @1 :Text;
   fuzzyFingerprint @55 :Bool;
-
+  enablehybridEcu @74 :Bool; #hydrid ecu
   notCar @66 :Bool;  # flag for non-car robotics platforms
 
   pcmCruise @3 :Bool;        # is openpilot's state tied to the PCM's cruise state?
