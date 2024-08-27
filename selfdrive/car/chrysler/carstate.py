@@ -64,7 +64,7 @@ class CarState(CarStateBase):
   def update(self, cp, cp_cam):
     ret = car.CarState.new_message()
 
-    ret.standstill = bool(cp.vl["ESP_8"]["STANDSTILL"])
+    ret.standstill = bool(cp.vl["ESP_8"]["Vehicle_Stopped"])
     #self.long_accel = cp.vl["INERTIAL_SENSOR"]["LONG_ACCEL"]
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(cp.vl["GEAR"]["PRNDL"], None))
     ret.steeringTorque = cp.vl["EPS_2"]["COLUMN_TORQUE"]/4
