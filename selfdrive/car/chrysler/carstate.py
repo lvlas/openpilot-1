@@ -80,7 +80,9 @@ class CarState(CarStateBase):
     ret.vEgoRaw = cp.vl["ESP_8"]["Vehicle_Speed"] * CV.KPH_TO_MS
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
     self.acc_hold = bool(cp.vl["DAS_3"]["ACC_STANDSTILL"]) 
-    self.lead_dist = cp.vl["DAS_4"]["SPEED_DIGITAL"]    
+    self.lead_dist = cp.vl["DAS_4"]["SPEED_DIGITAL"]  
+    self.tcs_active = bool(cp.vl["ESP_2"]["TCS_ACTIVE"])
+    self.reg_cc_on_button = bool(cp.vl["CRUISE_BUTTONS"]["REG_CC_BUTTON_ON"])    
 
     self.acc_cancel_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Cancel"]) or self.reg_cc_on_button or self.tcs_active
     self.acc_resume_button = bool(cp.vl["CRUISE_BUTTONS"]["ACC_Resume"])
