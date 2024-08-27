@@ -19,6 +19,9 @@ from common.cached_params import CachedParams
 from common.params import Params
 from cereal import car, messaging
 
+from openpilot.selfdrive.car.chrysler.chryslercan import create_lkas_hud, create_lkas_command, \
+  create_wheel_buttons, create_mango_hud, create_op_acc_1, create_op_acc_2, create_op_dashboard, create_op_chime
+
 GearShifter = car.CarState.GearShifter
 ButtonType = car.CarState.ButtonEvent.Type
 
