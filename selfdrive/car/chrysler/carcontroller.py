@@ -54,6 +54,7 @@ class CarController(CarControllerBase):
     self.mango_lat_active = True #Params().get_bool('ChryslerMangoLat')
     self.full_range_steer = False #Params().get_bool('LkasFullRangeAvailable')
     self.mango_mode_active = self.mango_lat_active or self.full_range_steer
+    self.acc_enabled = False    
 
     self.packer = CANPacker(dbc_name)
     self.params = CarControllerParams(CP)
