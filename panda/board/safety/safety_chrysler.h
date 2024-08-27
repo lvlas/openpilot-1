@@ -4,7 +4,7 @@ const SteeringLimits CHRYSLER_STEERING_LIMITS = {
   .max_rt_interval = 250000,
   .max_rate_up = 3,
   .max_rate_down = 3,
-  .max_torque_error = 80,
+  .max_torque_error = 320,
   .type = TorqueMotorLimited,
 };
 
@@ -133,12 +133,11 @@ RxCheck chrysler_ram_hd_rx_checks[] = {
 const uint32_t CHRYSLER_PARAM_RAM_DT = 1U;  // set for Ram DT platform
 const uint32_t CHRYSLER_PARAM_RAM_HD = 2U;  // set for Ram HD platform
 
-typedef enum {
+enum {
   CHRYSLER_RAM_DT,
   CHRYSLER_RAM_HD,
   CHRYSLER_PACIFICA,  // plus Jeep
-} ChryslerPlatform;
-ChryslerPlatform chrysler_platform = CHRYSLER_PACIFICA;
+} chrysler_platform = CHRYSLER_PACIFICA;
 const ChryslerAddrs *chrysler_addrs = &CHRYSLER_ADDRS;
 
 static uint32_t chrysler_get_checksum(const CANPacket_t *to_push) {
@@ -190,7 +189,7 @@ static void chrysler_rx_hook(const CANPacket_t *to_push) {
   // Measured EPS torque
   if ((bus == 0) && (addr == chrysler_addrs->EPS_2)) {
     int torque_meas_new = ((GET_BYTE(to_push, 4) & 0x7U) << 8) + GET_BYTE(to_push, 5) - 1024U;
-    update_sample(&torque_meas, torque_meas_new);
+    update_sample(&torque_meas, torque_meas_new/4);
   }
 
   if ((bus == 0) && (addr == chrysler_addrs->GEAR)) {
