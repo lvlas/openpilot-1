@@ -200,7 +200,7 @@ class CarController(CarControllerBase):
     
     
     # cruise buttons
-    #das_bus = 2 if self.CP.carFingerprint in RAM_CARS else 0
+    das_bus = 0
 
     # ACC cancellation
     # if CC.cruiseControl.cancel:
