@@ -152,6 +152,7 @@ BO_ 571 CRUISE_BUTTONS: 3 XXX
  SG_ ACC_Distance_Inc : 8|1@1+ (1,0) [0|0] "" XXX
  SG_ COUNTER : 15|4@0+ (1,0) [0|15] "" XXX
  SG_ CHECKSUM : 23|8@0+ (1,0) [0|255] "" XXX
+ SG_ REG_CC_BUTTON_ON : 6|1@0+ (1,0) [0|1] "" XXX
 
 BO_ 625 DAS_5: 8 XXX
  SG_ FCW_STATE : 2|1@1+ (1,0) [0|0] ""  XXX
