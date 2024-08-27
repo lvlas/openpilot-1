@@ -78,7 +78,8 @@ class CarState(CarStateBase):
     self.lkas_status_ok = cp_cam.vl["LKAS_HEARTBIT"]["LKAS_BUTTON_LED"]
     self.apa_steer_status = cp.vl["AUTO_PARK_REQUEST"]["APA_STEER_ACT"] == 1    
     ret.vEgoRaw = cp.vl["ESP_8"]["Vehicle_Speed"] * CV.KPH_TO_MS
-    ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)       
+    ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
+    self.acc_hold = bool(cp.vl["ACC_2"]["ACC_STOP"])    
     
     button_events = []
     for buttonType in CHECK_BUTTONS:
