@@ -261,6 +261,7 @@ class CarState(CarStateBase):
       ("ECM_1", 50),
       ("ECM_TRQ", 50),
       ("TCM_A7", 50),
+      ("ESC_ACC_COPY", 50),      
     ]
 
     if CP.enableBsm:
