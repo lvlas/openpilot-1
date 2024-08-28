@@ -78,6 +78,7 @@ class CarInterface(CarInterfaceBase):
 
       ret.enableBsm = True
       ret.experimentalLongitudinalAvailable = True
+      ret.minSteerSpeed = 0
 
     # Ram
     elif candidate == CAR.RAM_1500_5TH_GEN:
@@ -117,19 +118,21 @@ class CarInterface(CarInterfaceBase):
 
     #ret.buttonEvents = create_button_events(self.CS.distance_button, self.CS.prev_distance_button, {1: ButtonType.gapAdjustCruise})
 
+    ret.steerError = self.CC.steerErrorMod
+    
     # events
     events = self.create_common_events(ret, extra_gears=[car.CarState.GearShifter.low])
 
     # Low speed steer alert hysteresis logic
-    if self.CP.minSteerSpeed > 0. and ret.vEgo < (self.CP.minSteerSpeed + 0.5):
-      self.low_speed_alert = True
-    elif ret.vEgo > (self.CP.minSteerSpeed + 1.):
-      self.low_speed_alert = False
+    #if self.CP.minSteerSpeed > 0. and ret.vEgo < (self.CP.minSteerSpeed + 0.5):
+    #  self.low_speed_alert = True
+    #elif ret.vEgo > (self.CP.minSteerSpeed + 1.):
+    #  self.low_speed_alert = False
 
     if self.CS.lkas_button_light:
       events.add(car.CarEvent.EventName.lkasUserDisabled)
-    elif self.low_speed_alert:
-      events.add(car.CarEvent.EventName.belowSteerSpeed)
+    #elif self.low_speed_alert:
+    #  events.add(car.CarEvent.EventName.belowSteerSpeed)
 
     ret.events = events.to_msg()
 
