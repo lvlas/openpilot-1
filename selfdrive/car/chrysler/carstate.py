@@ -64,9 +64,9 @@ class CarState(CarStateBase):
   def update(self, cp, cp_cam):
     ret = car.CarState.new_message()
 
-    self.steerError = cp.vl["EPS_STATUS"]["LKAS_STATE"] == 4
-    self.apaFault = cp.vl["EPS_STATUS"]["APA_STEER_FAULT"] == 1
-    self.apasteerOn = cp.vl["EPS_STATUS"]["APA_ACTIVE"] == 1
+    self.steerError = cp.vl["EPS_2"]["LKAS_STATE"] == 4
+    self.apaFault = cp.vl["EPS_2"]["APA_STEER_FAULT"] == 1
+    self.apasteerOn = cp.vl["EPS_2"]["AUTO_PARK_HAS_CONTROL_2"] == 1
     self.apa_steer_status = cp.vl["AUTO_PARK_REQUEST"]['APA_STEER_ACT'] == 1    
     
     button_events = []
@@ -236,7 +236,6 @@ class CarState(CarStateBase):
       ("ECM_1", 50),
       ("ECM_TRQ", 50),
       ("TCM_A7", 50),
-      ("EPS_STATUS", 100),
       ("AUTO_PARK_REQUEST", 50),
     ]
 
