@@ -200,7 +200,7 @@ class CarController(CarControllerBase):
     
     
     # cruise buttons
-    das_bus = 0
+    das_bus = 2
 
     # ACC cancellation
     # if CC.cruiseControl.cancel:
