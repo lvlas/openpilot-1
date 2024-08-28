@@ -178,8 +178,8 @@ class CarController(CarControllerBase):
         new_msg = create_wheel_buttons(self.packer, CS.wheel_button_counter + 1, button_type)
         can_sends.append(new_msg)
 
-     LKAS_HEARTBIT is forwarded by Panda so no need to send it here.
-     frame is 100Hz (0.01s period)
+     #LKAS_HEARTBIT is forwarded by Panda so no need to send it here.
+     #frame is 100Hz (0.01s period)
     if (self.ccframe % 2 == 0) and wp_type == 2:  # 0.02s period
       new_msg = create_mango_hud(
           self.packer, self.apaActive, CS.apaFault, lkas_active,
