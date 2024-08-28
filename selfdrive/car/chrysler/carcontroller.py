@@ -166,7 +166,7 @@ class CarController(CarControllerBase):
 
     if (self.ccframe % 8 < 4) and self.ccframe >= self.stop_button_spam:  #and wheel_button_counter_change
       button_type = None
-      if not enabled and pcm_cancel_cmd and CS.out.cruiseState.enabled #and not self.op_long_enable:
+      if not enabled and pcm_cancel_cmd and CS.out.cruiseState.enabled: #and not self.op_long_enable:
         button_type = 'ACC_CANCEL'
         self.op_cancel_cmd = True
       elif enabled and self.resume_press and not self.op_long_enable and ((CS.lead_dist > self.lead_dist_at_stop) or (CC.hudControl.leadvRel > 0) or (15 > CS.lead_dist >= 6.)):
