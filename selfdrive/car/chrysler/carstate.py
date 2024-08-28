@@ -69,9 +69,9 @@ class CarState(CarStateBase):
     ret.standstill = bool(cp.vl["ESP_8"]["Vehicle_Stopped"])
     #self.long_accel = cp.vl["INERTIAL_SENSOR"]["LONG_ACCEL"]
     #ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(cp.vl["GEAR"]["PRNDL"], None))
-    ret.steeringTorque = cp.vl["EPS_2"]["COLUMN_TORQUE"] #/4
-    ret.steeringTorqueEps = cp.vl["EPS_2"]["EPS_TORQUE_MOTOR"] #/4 #if Params().get_bool("ChryslerMangoLat") else cp.vl["EPS_2"]["TORQUE_MOTOR"]
-    ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD #/4
+    ret.steeringTorque = cp.vl["EPS_2"]["COLUMN_TORQUE"]*2 #/4
+    ret.steeringTorqueEps = cp.vl["EPS_2"]["EPS_TORQUE_MOTOR"]*2 #/4 #if Params().get_bool("ChryslerMangoLat") else cp.vl["EPS_2"]["TORQUE_MOTOR"]
+    ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD*2 #/4
     #ret.cruiseState.enabled = bool(cp.vl["DAS_3"]["ACC_ACTIVE"])  # ACC is green.
     self.steerFaultPermanent = cp.vl["EPS_2"]["LKAS_STEER_FAULT"] == 4
     self.apaFault = cp.vl["EPS_2"]["APA_STEER_FAULT"] == 1
