@@ -159,7 +159,7 @@ class CarController(CarControllerBase):
     self.apaActive = CS.apasteerOn and self.steer_type == 2
     #novy    
       
-      can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))
+    can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))
 
     if CC.enabled:
       # auto set profile
