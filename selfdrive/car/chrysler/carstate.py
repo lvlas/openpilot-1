@@ -143,9 +143,9 @@ class CarState(CarStateBase):
     # steering wheel
     ret.steeringAngleDeg = cp.vl["STEERING"]["STEERING_ANGLE"] + cp.vl["STEERING"]["STEERING_ANGLE_HP"]
     ret.steeringRateDeg = cp.vl["STEERING"]["STEERING_RATE"]
-    ret.steeringTorque = cp.vl["EPS_2"]["COLUMN_TORQUE"]
-    ret.steeringTorqueEps = cp.vl["EPS_2"]["EPS_TORQUE_MOTOR"]
-    ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
+    #######ret.steeringTorque = cp.vl["EPS_2"]["COLUMN_TORQUE"]
+    #######ret.steeringTorqueEps = cp.vl["EPS_2"]["EPS_TORQUE_MOTOR"]
+    #######ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
 
     # cruise state
     cp_cruise = cp_cam if self.CP.carFingerprint in RAM_CARS else cp
