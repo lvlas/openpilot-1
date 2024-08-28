@@ -4,7 +4,7 @@ from opendbc.can.packer import CANPacker
 from openpilot.selfdrive.car import apply_meas_steer_torque_limits, button_pressed
 from openpilot.selfdrive.car.chrysler import chryslercan
 from openpilot.selfdrive.car.chrysler.values import RAM_CARS, CarControllerParams, ChryslerFlags, DRIVE_PERSONALITY
-from openpilot.selfdrive.car.interfaces import CarControllerBase
+from openpilot.selfdrive.car.interfaces import CarControllerBase, GearShifter
 
 from openpilot.selfdrive.controls.lib.drive_helpers import V_CRUISE_MIN, V_CRUISE_MIN_IMPERIAL
 from openpilot.selfdrive.car.chrysler.long_carcontroller_v1 import LongCarControllerV1
@@ -145,6 +145,20 @@ class CarController(CarControllerBase):
 
       self.apply_steer_last = apply_steer
 
+    #novy
+    if CS.out.standstill:
+      self.steer_type = wp_type
+
+    if wp_type != 2:
+      self.steerErrorMod = CS.steerError
+      self.steer_type = int(0)
+    elif CS.apaFault or CS.out.gearShifter not in (GearShifter.drive, GearShifter.low) or \
+            abs(CS.out.steeringAngleDeg) > 330. or self.on_timer < 200 or CS.apa_steer_status:
+      self.steer_type = int(0)
+
+    self.apaActive = CS.apasteerOn and self.steer_type == 2
+    #novy    
+      
       can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))
 
     if CC.enabled:
