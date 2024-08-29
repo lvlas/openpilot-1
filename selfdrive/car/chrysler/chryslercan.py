@@ -56,7 +56,7 @@ def create_lkas_hud(packer, CP, lat_active, hud_alert, hud_count, car_model, aut
 
 def create_lkas_command(packer, apply_steer, lkas_active, counter):
   # LKAS_COMMAND Lane-keeping signal to turn the wheel
-  enabled_val = 2 if CP.carFingerprint in RAM_CARS else 1
+  enabled_val = 1 #2 if CP.carFingerprint in RAM_CARS else 1
   values = {
     "LKAS_STEERING_TORQUE": apply_steer,
     "LKAS_HIGH_TORQUE": lkas_active,
