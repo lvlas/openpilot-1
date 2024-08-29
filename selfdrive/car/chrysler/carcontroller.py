@@ -64,30 +64,6 @@ class CarController(CarControllerBase):
 
     # cruise buttons
     das_bus = 2 if self.CP.carFingerprint in RAM_CARS else 0
-
-    # *** compute control surfaces ***
-    if self.on_timer < 200:
-      self.on_timer += 1
-
-    spoof_speed = 0.
-
-    if spoof_speed == 65.:
-      wp_type = int(1)
-    elif spoof_speed == 0.:
-      wp_type = int(2)
-    else:
-      wp_type = int(0)
-
-    if CC.enabled:
-      if self.timer < 99 and wp_type == 1 and CS.out.vEgo < 65:
-        self.timer += 1
-      else:
-        self.timer = 99
-    else:
-      self.timer = 0
-
-    lkas_active = self.timer == 99
-#nad timhle je novy kod
     
     # ACC cancellation
     # if CC.cruiseControl.cancel:
@@ -98,20 +74,6 @@ class CarController(CarControllerBase):
     # elif CC.cruiseControl.resume:
     #   self.last_button_frame = self.frame
     #   can_sends.append(chryslercan.create_cruise_buttons(self.packer, CS.button_counter + 1, das_bus, resume=True))
-
-    #novy
-    if CS.out.standstill:
-      self.steer_type = wp_type
-
-    if wp_type != 2:
-      self.steerErrorMod = CS.steerError
-      self.steer_type = int(0)
-    elif CS.apaFault or CS.out.gearShifter not in (GearShifter.drive, GearShifter.low) or \
-            abs(CS.out.steeringAngleDeg) > 330. or self.on_timer < 200 or CS.apa_steer_status:
-      self.steer_type = int(0)
-
-    self.apaActive = CS.apasteerOn and self.steer_type == 2
-    #novy  
     
     # jvePilot
     if button_pressed(CS.out, ButtonType.lkasToggle, False):
@@ -137,8 +99,8 @@ class CarController(CarControllerBase):
       lkas_control_bit = self.lkas_control_bit_prev
       if CS.out.vEgo > self.CP.minSteerSpeed or self.steerNoMinimum:
         lkas_control_bit = CC.latActive
-      #elif CS.out.vEgo < (self.CP.minSteerSpeed - self.steer_gap):
-      #  lkas_control_bit = False
+      elif CS.out.vEgo < (self.CP.minSteerSpeed - self.steer_gap):
+        lkas_control_bit = False
 
       if self.low_steer and self.lkas_control_bit_prev:
         # low steer vehicles never turn this off
