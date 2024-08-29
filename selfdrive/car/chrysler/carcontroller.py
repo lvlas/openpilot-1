@@ -27,6 +27,7 @@ class CarController(CarControllerBase):
     self.apply_steer_last = 0
     self.frame = 0
 
+    self.gone_fast_yet = False    
     self.timer = 0
     self.steerErrorMod = False
     self.steer_type = int(0)
