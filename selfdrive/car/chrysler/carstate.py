@@ -63,7 +63,7 @@ class CarState(CarStateBase):
 
   def update(self, cp, cp_cam):
     ret = car.CarState.new_message()
-
+    self.lkas_counter = cp_cam.vl["LKAS_COMMAND"]["COUNTER"]
     self.steerError = cp.vl["EPS_2"]["LKAS_STATE"] == 4
     self.apaFault = cp.vl["EPS_2"]["APA_STEER_FAULT"] == 1
     self.apasteerOn = cp.vl["EPS_2"]["AUTO_PARK_HAS_CONTROL_2"] == 1
