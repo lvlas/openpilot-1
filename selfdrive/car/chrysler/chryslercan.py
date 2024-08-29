@@ -54,7 +54,7 @@ def create_lkas_hud(packer, CP, lat_active, hud_alert, hud_count, car_model, aut
   return packer.make_can_msg("DAS_6", 0, values)
 
 
-def create_lkas_command(packer, CP, apply_steer, lkas_control_bit, wp_control, wp_active):
+def create_lkas_command(packer, CP, apply_steer, lkas_control_bit, wp_control, wp_active, lkas_active):
   # LKAS_COMMAND Lane-keeping signal to turn the wheel
   enabled_val = 2 if CP.carFingerprint in RAM_CARS else 1
   values = {
