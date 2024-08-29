@@ -161,7 +161,7 @@ class CarController(CarControllerBase):
       self.apply_steer_last = apply_steer
   
       
-      can_sends.append(chryslercan.create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter)
+      can_sends.append(chryslercan.create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter))
 
     if CC.enabled:
       # auto set profile
