@@ -61,8 +61,8 @@ def create_lkas_command(packer, CP, apply_steer, lkas_control_bit, wp_control, w
     "WP_CONTROL": 1 if wp_control else 0,
     "WP_ACTIVE": 1 if wp_active else 0,
     "STEERING_TORQUE": apply_steer,
-    "LKAS_CONTROL_BIT": enabled_val if lkas_control_bit else 0,
-    "LKAS_HIGH_TORQUE": lkas_active,    
+    #"LKAS_CONTROL_BIT": enabled_val if lkas_control_bit else 0,
+    "LKAS_CONTROL_BIT": lkas_active,    
   }
   return packer.make_can_msg("LKAS_COMMAND", 0, values)
 
