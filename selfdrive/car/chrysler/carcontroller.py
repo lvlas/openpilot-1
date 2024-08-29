@@ -99,6 +99,20 @@ class CarController(CarControllerBase):
     #   self.last_button_frame = self.frame
     #   can_sends.append(chryslercan.create_cruise_buttons(self.packer, CS.button_counter + 1, das_bus, resume=True))
 
+    #novy
+    if CS.out.standstill:
+      self.steer_type = wp_type
+
+    if wp_type != 2:
+      self.steerErrorMod = CS.steerError
+      self.steer_type = int(0)
+    elif CS.apaFault or CS.out.gearShifter not in (GearShifter.drive, GearShifter.low) or \
+            abs(CS.out.steeringAngleDeg) > 330. or self.on_timer < 200 or CS.apa_steer_status:
+      self.steer_type = int(0)
+
+    self.apaActive = CS.apasteerOn and self.steer_type == 2
+    #novy  
+    
     # jvePilot
     if button_pressed(CS.out, ButtonType.lkasToggle, False):
       CS.lkas_button_light = not CS.lkas_button_light
@@ -145,20 +159,7 @@ class CarController(CarControllerBase):
         apply_steer = apply_meas_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorqueEps, self.params)
 
       self.apply_steer_last = apply_steer
-
-    #novy
-    if CS.out.standstill:
-      self.steer_type = wp_type
-
-    if wp_type != 2:
-      self.steerErrorMod = CS.steerError
-      self.steer_type = int(0)
-    elif CS.apaFault or CS.out.gearShifter not in (GearShifter.drive, GearShifter.low) or \
-            abs(CS.out.steeringAngleDeg) > 330. or self.on_timer < 200 or CS.apa_steer_status:
-      self.steer_type = int(0)
-
-    self.apaActive = CS.apasteerOn and self.steer_type == 2
-    #novy    
+  
       
     can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive, False))
 
