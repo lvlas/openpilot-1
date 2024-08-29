@@ -262,6 +262,7 @@ class CarState(CarStateBase):
   def get_cam_can_parser(CP):
     messages = [
       ("DAS_6", 4),
+      ("LKAS_COMMAND", 100),     
     ]
 
     if CP.carFingerprint in RAM_CARS:
