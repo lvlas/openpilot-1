@@ -64,6 +64,10 @@ class CarController(CarControllerBase):
 
     # cruise buttons
     das_bus = 2 if self.CP.carFingerprint in RAM_CARS else 0
+
+
+    lkas_active = True #self.timer == 99 and  (self.ccframe >= 500)
+
     
     # ACC cancellation
     # if CC.cruiseControl.cancel:
@@ -123,8 +127,8 @@ class CarController(CarControllerBase):
       self.apply_steer_last = apply_steer
   
       
-      #can_sends.append(chryslercan.create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter))
-      can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))      
+      can_sends.append(chryslercan.create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter))
+      #can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))      
 
     if CC.enabled:
       # auto set profile
