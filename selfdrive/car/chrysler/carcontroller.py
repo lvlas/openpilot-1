@@ -36,7 +36,7 @@ class CarController(CarControllerBase):
     
     self.hud_count = 0
     self.next_lkas_control_change = 0
-    self.lkas_control_bit_prev = False
+    self.lkas_control_bit_prev = True #False
     self.last_button_frame = 0
 
     self.packer = CANPacker(dbc_name)
@@ -129,7 +129,7 @@ class CarController(CarControllerBase):
       if CS.out.vEgo > self.CP.minSteerSpeed or self.steerNoMinimum:
         lkas_control_bit = CC.latActive
       elif CS.out.vEgo < (self.CP.minSteerSpeed - self.steer_gap):
-        lkas_control_bit = False
+        lkas_control_bit = True #False
 
       if self.low_steer and self.lkas_control_bit_prev:
         # low steer vehicles never turn this off
