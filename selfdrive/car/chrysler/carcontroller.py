@@ -26,6 +26,7 @@ class CarController(CarControllerBase):
     self.CP = CP
     self.apply_steer_last = 0
     self.frame = 0
+    self.ccframe = 0    
 
     self.gone_fast_yet = False    
     self.timer = 0
@@ -166,6 +167,7 @@ class CarController(CarControllerBase):
     self.long_controller.acc(self.sm['longitudinalPlan'], self.frame, CC, CS, can_sends)
 
     self.frame += 1
+    self.ccframe += 1    
 
     new_actuators = CC.actuators.as_builder()
     new_actuators.steer = self.apply_steer_last / self.params.STEER_MAX
