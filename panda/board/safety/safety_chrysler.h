@@ -1,5 +1,5 @@
 const SteeringLimits CHRYSLER_STEERING_LIMITS = {
-  .max_steer = 261,
+  .max_steer = 500,
   .max_rt_delta = 112,
   .max_rt_interval = 250000,
   .max_rate_up = 3,
@@ -40,10 +40,6 @@ typedef struct {
   const int LKAS_COMMAND;
   const int LKAS_HEARTBIT;
   const int CRUISE_BUTTONS;
-  const int DAS_X_WP;
-  const int DAS_3_WP;
-  const int CLUSTER_WP;
-  const int CHIME;
 } ChryslerAddrs;
 
 // CAN messages for Chrysler/Jeep platforms
@@ -59,10 +55,6 @@ const ChryslerAddrs CHRYSLER_ADDRS = {
   .LKAS_COMMAND     = 0x292,  // LKAS controls from DASM
   .LKAS_HEARTBIT    = 0x2D9,  // LKAS HEARTBIT from DASM
   .CRUISE_BUTTONS   = 0x23B,  // Cruise control buttons
-  .DAS_X_WP         = 0x272,  // ACC control msg (FOR White Panda)    
-  .DAS_3_WP         = 0x1F6,  // ACC engagement states from DASM (FOR White Panda)
-  .CLUSTER_WP       = 0x1F7,  // Instrument cluster states (FOR White Panda)
-  .CHIME            = 0x346,  // Chime message
 };
 
 // CAN messages for the 5th gen RAM DT platform
@@ -96,10 +88,6 @@ const CanMsg CHRYSLER_TX_MSGS[] = {
   {CHRYSLER_ADDRS.DAS_3, 0, 8},
   {CHRYSLER_ADDRS.DAS_5, 0, 8},
   {CHRYSLER_ADDRS.LKAS_HEARTBIT, 0, 5},
-  {CHRYSLER_ADDRS.DAS_X_WP, 0, 8},
-  {CHRYSLER_ADDRS.DAS_3_WP, 0, 8},
-  {CHRYSLER_ADDRS.CLUSTER_WP, 0, 8},
-  {CHRYSLER_ADDRS.CHIME, 0, 2},
 };
 
 const CanMsg CHRYSLER_RAM_DT_TX_MSGS[] = {
@@ -115,12 +103,12 @@ const CanMsg CHRYSLER_RAM_HD_TX_MSGS[] = {
 };
 
 RxCheck chrysler_rx_checks[] = {
-//  {.msg = {{CHRYSLER_ADDRS.EPS_2, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 100U}, { 0 }, { 0 }}},
+  {.msg = {{CHRYSLER_ADDRS.EPS_2, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 100U}, { 0 }, { 0 }}},
   {.msg = {{CHRYSLER_ADDRS.ESP_1, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
   //{.msg = {{ESP_8, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}}},
-//  {.msg = {{514, 0, 8, .check_checksum = false, .max_counter = 0U, .frequency = 100U}, { 0 }, { 0 }}},
-//  {.msg = {{CHRYSLER_ADDRS.ECM_5, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
-//  {.msg = {{CHRYSLER_ADDRS.DAS_3, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
+  {.msg = {{514, 0, 8, .check_checksum = false, .max_counter = 0U, .frequency = 100U}, { 0 }, { 0 }}},
+  {.msg = {{CHRYSLER_ADDRS.ECM_5, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
+  {.msg = {{CHRYSLER_ADDRS.DAS_3, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
   {.msg = {{CHRYSLER_ADDRS.GEAR, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
 };
 
@@ -145,11 +133,12 @@ RxCheck chrysler_ram_hd_rx_checks[] = {
 const uint32_t CHRYSLER_PARAM_RAM_DT = 1U;  // set for Ram DT platform
 const uint32_t CHRYSLER_PARAM_RAM_HD = 2U;  // set for Ram HD platform
 
-enum {
+typedef enum {
   CHRYSLER_RAM_DT,
   CHRYSLER_RAM_HD,
   CHRYSLER_PACIFICA,  // plus Jeep
-} chrysler_platform = CHRYSLER_PACIFICA;
+} ChryslerPlatform;
+ChryslerPlatform chrysler_platform = CHRYSLER_PACIFICA;
 const ChryslerAddrs *chrysler_addrs = &CHRYSLER_ADDRS;
 
 static uint32_t chrysler_get_checksum(const CANPacket_t *to_push) {
@@ -201,7 +190,7 @@ static void chrysler_rx_hook(const CANPacket_t *to_push) {
   // Measured EPS torque
   if ((bus == 0) && (addr == chrysler_addrs->EPS_2)) {
     int torque_meas_new = ((GET_BYTE(to_push, 4) & 0x7U) << 8) + GET_BYTE(to_push, 5) - 1024U;
-    update_sample(&torque_meas, torque_meas_new/4);
+    update_sample(&torque_meas, torque_meas_new);
   }
 
   if ((bus == 0) && (addr == chrysler_addrs->GEAR)) {
