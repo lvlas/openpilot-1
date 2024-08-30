@@ -58,6 +58,9 @@ class CarController(CarControllerBase):
 
     self.long_controller = LongCarControllerV1(self.CP, self.params, self.packer)
 
+    self.full_range_steer = False
+    self.mango_lat_active = True    
+
   def update(self, CC, CS, now_nanos):
     can_sends = []
     self.sm.update(0)
@@ -66,8 +69,29 @@ class CarController(CarControllerBase):
     das_bus = 2 if self.CP.carFingerprint in RAM_CARS else 0
 
 
-    lkas_active = True #self.timer == 99 and  (self.ccframe >= 500)
+    enabled = CC.enabled
 
+    
+    wp_type = int(0)
+    #self.hightorqUnavailable = False
+
+    if self.full_range_steer:
+      wp_type = int(1)
+    if self.mango_lat_active:
+      wp_type = int(2)
+
+    if enabled:
+      if self.timer < 99 and wp_type == 1 and CS.out.vEgo < 65:
+        self.timer += 1
+      else:
+        self.timer = 99
+    else:
+      self.timer = 0    
+
+    lkas_active = self.timer == 99 and  (self.ccframe >= 500)
+
+
+    
     
     # ACC cancellation
     # if CC.cruiseControl.cancel:
