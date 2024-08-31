@@ -59,6 +59,10 @@ const ChryslerAddrs CHRYSLER_ADDRS = {
   .LKAS_COMMAND     = 0x292,  // LKAS controls from DASM
   .LKAS_HEARTBIT    = 0x2D9,  // LKAS HEARTBIT from DASM
   .CRUISE_BUTTONS   = 0x23B,  // Cruise control buttons
+  .DAS_X_WP         = 0x272,  // ACC control msg (FOR White Panda)    
+  .DAS_3_WP         = 0x1F6,  // ACC engagement states from DASM (FOR White Panda)
+  .CLUSTER_WP       = 0x1F7,  // Instrument cluster states (FOR White Panda)
+  .CHIME            = 0x346,  // Chime message
 };
 
 // CAN messages for the 5th gen RAM DT platform
