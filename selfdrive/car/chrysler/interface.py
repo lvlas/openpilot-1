@@ -70,14 +70,23 @@ class CarInterface(CarInterfaceBase):
     elif candidate in (CAR.JEEP_GRAND_CHEROKEE, CAR.JEEP_GRAND_CHEROKEE_2019):
       ret.steerActuatorDelay = 0.2
 
-      ret.lateralTuning.init('pid')
-      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.15, 0.30], [0.03, 0.05]]
-      ret.lateralTuning.pid.kf = 0.00006
-      ret.minSteerSpeed = 0
-      ret.enableBsm = True
-      ret.experimentalLongitudinalAvailable = True
+      #ret.lateralTuning.init('pid')
+      #ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
+      #ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.15, 0.30], [0.03, 0.05]]
+      #ret.lateralTuning.pid.kf = 0.00006
+      #ret.minSteerSpeed = 0
+      #ret.enableBsm = True
+      #ret.experimentalLongitudinalAvailable = True
 
+      ret.lateralTuning.init('pid')
+      ret.lateralTuning.pid.kiBP = [0.0]
+      ret.lateralTuning.pid.kpBP = [0.0]
+      ret.lateralTuning.pid.kpV = [0.015]
+      ret.lateralTuning.pid.kiV = [0.005]
+      ret.lateralTuning.pid.kf = 0.00006
+      ret.minSteerSpeed = 0.0
+      ret.experimentalLongitudinalAvailable = True
+    
     # Ram
     elif candidate == CAR.RAM_1500_5TH_GEN:
       ret.steerActuatorDelay = 0.2
