@@ -1,10 +1,10 @@
 const SteeringLimits CHRYSLER_STEERING_LIMITS = {
-  .max_steer = 1500, //261, 340 asi fungovalo? 500 1000 nevim jestli to vubec neco dela
-  .max_rt_delta = 450, //112 200
+  .max_steer = 2000, //1500 261, 340 asi fungovalo? 500 1000 nevim jestli to vubec neco dela
+  .max_rt_delta = 700, //450 112 200
   .max_rt_interval = 250000, //250000
-  .max_rate_up = 15, //6 neslo 3
-  .max_rate_down = 25, //6 neslo 3
-  .max_torque_error = 350, //bylo 80 300
+  .max_rate_up = 20, //15 3
+  .max_rate_down = 30, //25 neslo 3
+  .max_torque_error = 350, //350 bylo 80 300
   .type = TorqueMotorLimited,
 };
 
