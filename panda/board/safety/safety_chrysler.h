@@ -1,5 +1,5 @@
 const SteeringLimits CHRYSLER_STEERING_LIMITS = {
-  .max_steer = 1500, //261, 340 asi fungovalo? 500 1000
+  .max_steer = 1500, //261, 340 asi fungovalo? 500 1000 nevim jestli to vubec neco dela
   .max_rt_delta = 450, //112 200
   .max_rt_interval = 250000, //250000
   .max_rate_up = 15, //6 neslo 3
