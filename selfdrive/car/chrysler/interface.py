@@ -79,12 +79,11 @@ class CarInterface(CarInterfaceBase):
       #ret.experimentalLongitudinalAvailable = True
 
       ret.lateralTuning.init('pid')
-      ret.lateralTuning.pid.kiBP = [0.0]
-      ret.lateralTuning.pid.kpBP = [0.0]
-      ret.lateralTuning.pid.kpV = [0.015]
-      ret.lateralTuning.pid.kiV = [0.005]
+      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[18., 40.], [18., 40.]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.30, 0.60], [0.06, 0.1]]
       ret.lateralTuning.pid.kf = 0.00006
-      ret.minSteerSpeed = 0.0
+      ret.minSteerSpeed = 0
+      ret.enableBsm = True
       ret.experimentalLongitudinalAvailable = True
     
     # Ram
