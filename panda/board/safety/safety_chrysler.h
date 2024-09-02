@@ -4,7 +4,7 @@ const SteeringLimits CHRYSLER_STEERING_LIMITS = {
   .max_rt_interval = 250000,
   .max_rate_up = 15, //3
   .max_rate_down = 25, //3
-  .max_torque_error = 350, //320
+  .max_torque_error = 320,
   .type = TorqueMotorLimited,
 };
 
@@ -49,10 +49,10 @@ typedef struct {
 // CAN messages for Chrysler/Jeep platforms
 const ChryslerAddrs CHRYSLER_ADDRS = {
   .EPS_2            = 0x220,  // EPS driver input torque
-  .ESP_1            = 0x10,  // Brake pedal and vehicle speed
+  .ESP_1            = 0x140,  // Brake pedal and vehicle speed
   .ESP_8            = 0x11C,  // Brake pedal and vehicle speed
   .ECM_5            = 0x22F,  // Throttle position sensor
-  .DAS_3            = 0x1F,  // ACC
+  .DAS_3            = 0x1F4,  // ACC
   .DAS_5            = 0x271,  // ACC for hybrids
   .DAS_6            = 0x2A6,  // LKAS HUD and auto headlight control from DASM
   .GEAR             = 0x170,  // Current GEAR
@@ -62,7 +62,7 @@ const ChryslerAddrs CHRYSLER_ADDRS = {
   .DAS_X_WP         = 0x272,  // ACC control msg (FOR White Panda)    
   .DAS_3_WP         = 0x1F6,  // ACC engagement states from DASM (FOR White Panda)
   .CLUSTER_WP       = 0x1F7,  // Instrument cluster states (FOR White Panda)
-  .CHIME            = 0x36,  // Chime message
+  .CHIME            = 0x346,  // Chime message
 };
 
 // CAN messages for the 5th gen RAM DT platform
@@ -80,10 +80,10 @@ const ChryslerAddrs CHRYSLER_RAM_DT_ADDRS = {
 // CAN messages for the 5th gen RAM HD platform
 const ChryslerAddrs CHRYSLER_RAM_HD_ADDRS = {
   .EPS_2            = 0x220,  // EPS driver input torque
-  .ESP_1            = 0x10,  // Brake pedal and vehicle speed
+  .ESP_1            = 0x140,  // Brake pedal and vehicle speed
   .ESP_8            = 0x11C,  // Brake pedal and vehicle speed
   .ECM_5            = 0x22F,  // Throttle position sensor
-  .DAS_3            = 0x1F,  // ACC engagement states from DASM
+  .DAS_3            = 0x1F4,  // ACC engagement states from DASM
   .DAS_6            = 0x275,  // LKAS HUD and auto headlight control from DASM
   .LKAS_COMMAND     = 0x276,  // LKAS controls from DASM
   .CRUISE_BUTTONS   = 0x23A,  // Cruise control buttons
@@ -118,7 +118,7 @@ RxCheck chrysler_rx_checks[] = {
   //{.msg = {{CHRYSLER_ADDRS.EPS_2, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 100U}, { 0 }, { 0 }}},
   {.msg = {{CHRYSLER_ADDRS.ESP_1, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
   //{.msg = {{ESP_8, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}}},
-  //{.msg = {{51, 0, 8, .check_checksum = false, .max_counter = 0U, .frequency = 100U}, { 0 }, { 0 }}},
+  //{.msg = {{514, 0, 8, .check_checksum = false, .max_counter = 0U, .frequency = 100U}, { 0 }, { 0 }}},
   //{.msg = {{CHRYSLER_ADDRS.ECM_5, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
   //{.msg = {{CHRYSLER_ADDRS.DAS_3, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
   {.msg = {{CHRYSLER_ADDRS.GEAR, 0, 8, .check_checksum = true, .max_counter = 15U, .frequency = 50U}, { 0 }, { 0 }}},
@@ -192,7 +192,7 @@ static uint32_t chrysler_compute_checksum(const CANPacket_t *to_push) {
 }
 
 static uint8_t chrysler_get_counter(const CANPacket_t *to_push) {
-  return (uint8_t)(GET_BYTE(to_push, 6) >> );
+  return (uint8_t)(GET_BYTE(to_push, 6) >> 4);
 }
 
 static void chrysler_rx_hook(const CANPacket_t *to_push) {
@@ -201,12 +201,12 @@ static void chrysler_rx_hook(const CANPacket_t *to_push) {
 
   // Measured EPS torque
   if ((bus == 0) && (addr == chrysler_addrs->EPS_2)) {
-    int torque_meas_new = ((GET_BYTE(to_push, ) & 0x7U) << 8) + GET_BYTE(to_push, 5) - 102U;
-    update_sample(&torque_meas, torque_meas_new/4);
+    int torque_meas_new = ((GET_BYTE(to_push, 4) & 0x7U) << 8) + GET_BYTE(to_push, 5) - 1024U;
+    update_sample(&torque_meas, torque_meas_new/2);
   }
 
   if ((bus == 0) && (addr == chrysler_addrs->GEAR)) {
-    forward_gear = ((GET_BYTE(to_push, 0) >> 2) & 0x7U) >= ;
+    forward_gear = ((GET_BYTE(to_push, 0) >> 2) & 0x7U) >= 4;
   }
 
   const int das_3_bus = (chrysler_platform == CHRYSLER_PACIFICA) ? 0 : 2;
@@ -230,11 +230,11 @@ static void chrysler_rx_hook(const CANPacket_t *to_push) {
   // TODO: use the same message for both
   // update vehicle moving
   if ((chrysler_platform != CHRYSLER_PACIFICA) && (bus == 0) && (addr == chrysler_addrs->ESP_8)) {
-    vehicle_moving = ((GET_BYTE(to_push, ) << 8) + GET_BYTE(to_push, 5)) != 0U;
+    vehicle_moving = ((GET_BYTE(to_push, 4) << 8) + GET_BYTE(to_push, 5)) != 0U;
   }
-  if ((chrysler_platform == CHRYSLER_PACIFICA) && (bus == 0) && (addr == 51)) {
-    int speed_l = (GET_BYTE(to_push, 0) << ) + (GET_BYTE(to_push, 1) >> );
-    int speed_r = (GET_BYTE(to_push, 2) << ) + (GET_BYTE(to_push, 3) >> );
+  if ((chrysler_platform == CHRYSLER_PACIFICA) && (bus == 0) && (addr == 514)) {
+    int speed_l = (GET_BYTE(to_push, 0) << 4) + (GET_BYTE(to_push, 1) >> 4);
+    int speed_r = (GET_BYTE(to_push, 2) << 4) + (GET_BYTE(to_push, 3) >> 4);
     vehicle_moving = (speed_l != 0) || (speed_r != 0);
   }
 
@@ -259,12 +259,12 @@ static bool chrysler_tx_hook(const CANPacket_t *to_send) {
   if (addr == chrysler_addrs->LKAS_COMMAND) {
     int start_byte = (chrysler_platform == CHRYSLER_PACIFICA) ? 0 : 1;
     int desired_torque = ((GET_BYTE(to_send, start_byte) & 0x7U) << 8) | GET_BYTE(to_send, start_byte + 1);
-    desired_torque -= 102;
+    desired_torque -= 1024;
 
     const SteeringLimits limits = (chrysler_platform == CHRYSLER_PACIFICA) ? CHRYSLER_STEERING_LIMITS :
                                   (chrysler_platform == CHRYSLER_RAM_DT) ? CHRYSLER_RAM_DT_STEERING_LIMITS : CHRYSLER_RAM_HD_STEERING_LIMITS;
 
-    bool steer_req = (chrysler_platform == CHRYSLER_PACIFICA) ? GET_BIT(to_send, U) : (GET_BYTE(to_send, 3) & 0x7U) == 2U;
+    bool steer_req = (chrysler_platform == CHRYSLER_PACIFICA) ? GET_BIT(to_send, 4U) : (GET_BYTE(to_send, 3) & 0x7U) == 2U;
     if (steer_torque_cmd_checks(desired_torque, steer_req, limits)) {
       tx = false;
     }
