@@ -29,7 +29,7 @@ class CarController(CarControllerBase):
 
     self.timer=0
     self.ccframe=0
-        self.steer_rate_limited = False
+    self.steer_rate_limited = False
     self.steer_type = int(0)
     self.steerErrorMod = False
     self.hightorqUnavailable = False
