@@ -77,6 +77,7 @@ class CarInterface(CarInterfaceBase):
 
       ret.enableBsm = True
       ret.experimentalLongitudinalAvailable = True
+      ret.minSteerSpeed = 0.
 
     # Ram
     elif candidate == CAR.RAM_1500_5TH_GEN:
