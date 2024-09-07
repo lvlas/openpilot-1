@@ -29,6 +29,10 @@ class CarController(CarControllerBase):
 
     self.timer=0
     self.ccframe=0
+        self.steer_rate_limited = False
+    self.steer_type = int(0)
+    self.steerErrorMod = False
+    self.hightorqUnavailable = False
 
     self.hud_count = 0
     self.next_lkas_control_change = 0
@@ -57,7 +61,7 @@ class CarController(CarControllerBase):
 
   def update(self, CC, CS, now_nanos):
     #wp_type = int(0)
-    #self.hightorqUnavailable = False
+    self.hightorqUnavailable = False
 
     #if self.full_range_steer:
     #  wp_type = int(1)
@@ -74,7 +78,7 @@ class CarController(CarControllerBase):
 
     lkas_active = self.timer == 99 and  (self.ccframe >= 500) 
     
-    can_sends = []
+    ########################################################can_sends = []
     self.sm.update(0)
 
     # cruise buttons
@@ -132,10 +136,23 @@ class CarController(CarControllerBase):
       self.lkas_control_bit_prev = lkas_control_bit
 
       apply_steer = 0
-      if CC.latActive and lkas_control_bit:
+      if CC.latActive ################################################################and lkas_control_bit:
         apply_steer = apply_meas_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorqueEps, self.params)
 
+      self.steer_rate_limited = new_steer != apply_steer
       self.apply_steer_last = apply_steer
+      self.steer_type = wp_type
+
+      if CS.apaFault or CS.out.gearShifter not in (GearShifter.drive, GearShifter.low) or \
+        not CS.veh_on or CS.apa_steer_status:
+        self.steer_type = int(0)     
+
+      if (self.ccframe < 500) or \
+            (self.steer_type == int(0) and CS.out.gearShifter in (GearShifter.drive, GearShifter.low) and not CS.apaFault and self.mango_lat_active):
+        self.hightorqUnavailable = True
+
+      self.apaActive = CS.apasteerOn and self.steer_type == 2    
+      can_sends = []
 
       #can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))
       new_msg = chryslercan.create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter)
