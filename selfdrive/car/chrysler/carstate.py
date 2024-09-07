@@ -62,6 +62,7 @@ class CarState(CarStateBase):
     self.engine_torque = None
 
   def update(self, cp, cp_cam):
+    self.lkas_counter = cp_cam.vl["LKAS_COMMAND"]["COUNTER"]
     ret = car.CarState.new_message()
 
     button_events = []
@@ -255,6 +256,7 @@ class CarState(CarStateBase):
   @staticmethod
   def get_cam_can_parser(CP):
     messages = [
+      ("LKAS_COMMAND", 100),      
       ("DAS_6", 4),
     ]
 
