@@ -53,6 +53,24 @@ class CarController(CarControllerBase):
     self.long_controller = LongCarControllerV1(self.CP, self.params, self.packer)
 
   def update(self, CC, CS, now_nanos):
+    #wp_type = int(0)
+    #self.hightorqUnavailable = False
+
+    #if self.full_range_steer:
+    #  wp_type = int(1)
+    #if self.mango_lat_active:
+    wp_type = int(2)
+
+    if enabled:
+      if self.timer < 99 and wp_type == 1 and CS.out.vEgo < 65:
+        self.timer += 1
+      else:
+        self.timer = 99
+    else:
+      self.timer = 0
+
+    lkas_active = self.timer == 99 and  (self.ccframe >= 500) 
+    
     can_sends = []
     self.sm.update(0)
 
@@ -116,7 +134,9 @@ class CarController(CarControllerBase):
 
       self.apply_steer_last = apply_steer
 
-      can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))
+      #can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))
+      new_msg = create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter)
+      can_sends.append(new_msg)
 
     if CC.enabled:
       # auto set profile
