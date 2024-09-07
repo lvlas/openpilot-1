@@ -135,7 +135,7 @@ class CarController(CarControllerBase):
       self.apply_steer_last = apply_steer
 
       #can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))
-      new_msg = create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter)
+      new_msg = chryslercan.create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter)
       can_sends.append(new_msg)
 
     if CC.enabled:
