@@ -136,7 +136,7 @@ class CarController(CarControllerBase):
       self.lkas_control_bit_prev = lkas_control_bit
 
       apply_steer = 0
-      if CC.latActive ################################################################and lkas_control_bit:
+      if CC.latActive: ################################################################and lkas_control_bit:
         apply_steer = apply_meas_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorqueEps, self.params)
 
       self.steer_rate_limited = new_steer != apply_steer
