@@ -38,6 +38,8 @@ class CarState(CarStateBase):
     else:
       self.shifter_values = can_define.dv["GEAR"]["PRNDL"]
 
+    self.veh_on_timer = 0
+
     self.prev_distance_button = 0
     self.distance_button = 0
 
@@ -112,6 +114,12 @@ class CarState(CarStateBase):
     ret.steeringTorque = cp.vl["EPS_2"]["COLUMN_TORQUE"]
     ret.steeringTorqueEps = cp.vl["EPS_2"]["EPS_TORQUE_MOTOR"]
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
+
+    self.apaFault = cp.vl["EPS_2"]["APA_STEER_FAULT"] == 1
+    self.veh_on_timer += 1
+    self.veh_on = self.veh_on_timer >= 200
+    self.apa_steer_status = cp.vl["AUTO_PARK_REQUEST"]["APA_STEER_ACT"] == 1
+    self.apasteerOn = cp.vl["EPS_2"]["APA_ACTIVE"] == 1
 
     # cruise state
     cp_cruise = cp_cam if self.CP.carFingerprint in RAM_CARS else cp
