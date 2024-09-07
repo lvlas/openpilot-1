@@ -61,7 +61,7 @@ class CarController(CarControllerBase):
     #if self.mango_lat_active:
     wp_type = int(2)
 
-    if enabled:
+    if CC.enabled:
       if self.timer < 99 and wp_type == 1 and CS.out.vEgo < 65:
         self.timer += 1
       else:
