@@ -93,8 +93,8 @@ class CarController(CarControllerBase):
       lkas_control_bit = self.lkas_control_bit_prev
       if CS.out.vEgo > self.CP.minSteerSpeed or self.steerNoMinimum:
         lkas_control_bit = CC.latActive
-      elif CS.out.vEgo < (self.CP.minSteerSpeed - self.steer_gap):
-        lkas_control_bit = False
+      #elif CS.out.vEgo < (self.CP.minSteerSpeed - self.steer_gap):
+      #  lkas_control_bit = False
 
       if self.low_steer and self.lkas_control_bit_prev:
         # low steer vehicles never turn this off
