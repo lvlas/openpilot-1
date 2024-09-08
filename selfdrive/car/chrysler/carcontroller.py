@@ -47,7 +47,7 @@ class CarController(CarControllerBase):
     self.button_frame = 0
     self.last_target = 0
     self.last_personality = None
-    self.low_steer = not self.CP.flags & ChryslerFlags.HIGHER_MIN_STEERING_SPEED
+    self.low_steer = True #not self.CP.flags & ChryslerFlags.HIGHER_MIN_STEERING_SPEED
     self.steer_gap = 0.5 if self.CP.carFingerprint in RAM_CARS else 3.0
 
     self.long_controller = LongCarControllerV1(self.CP, self.params, self.packer)
@@ -93,8 +93,8 @@ class CarController(CarControllerBase):
       lkas_control_bit = self.lkas_control_bit_prev
       if CS.out.vEgo > self.CP.minSteerSpeed or self.steerNoMinimum:
         lkas_control_bit = CC.latActive
-      #elif CS.out.vEgo < (self.CP.minSteerSpeed - self.steer_gap):
-      #  lkas_control_bit = False
+      elif CS.out.vEgo < (self.CP.minSteerSpeed - self.steer_gap):
+        lkas_control_bit = False
 
       if self.low_steer and self.lkas_control_bit_prev:
         # low steer vehicles never turn this off
