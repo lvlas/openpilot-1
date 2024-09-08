@@ -1,9 +1,9 @@
 const SteeringLimits CHRYSLER_STEERING_LIMITS = {
-  .max_steer = 350,
+  .max_steer = 400,
   .max_rt_delta = 112,
   .max_rt_interval = 250000,
-  .max_rate_up = 4,
-  .max_rate_down = 4,
+  .max_rate_up = 6,
+  .max_rate_down = 6,
   .max_torque_error = 320,
   .type = TorqueMotorLimited,
 };
