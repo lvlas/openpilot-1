@@ -78,7 +78,7 @@ class CarController(CarControllerBase):
 
     lkas_active = self.timer == 99 and  (self.ccframe >= 500) 
     
-    ########################################################can_sends = []
+    can_sends = []
     self.sm.update(0)
 
     # cruise buttons
@@ -152,7 +152,7 @@ class CarController(CarControllerBase):
         self.hightorqUnavailable = True
 
       self.apaActive = CS.apasteerOn and self.steer_type == 2    
-      can_sends = []
+      #################################################can_sends = []
 
       #can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit, self.steerNoMinimum, CC.latActive))
       new_msg = chryslercan.create_lkas_command(self.packer, int(apply_steer), lkas_active, CS.lkas_counter)
